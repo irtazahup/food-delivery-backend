@@ -1,0 +1,13 @@
+### Variables
+// 🔥 FIX 2: Change port from 5000 to 3000
+@baseUrl = http://localhost:3000
+
+### Register a new user
+POST {{baseUrl}}/api/auth/signup
+Content-Type: application/json
+
+{
+    "name": "John Doe",
+    "email": "johndoe@example.com",
+    "password": "SecurePassword123"
+}
