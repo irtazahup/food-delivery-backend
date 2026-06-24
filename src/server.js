@@ -1,15 +1,29 @@
 const express = require("express");
-
+const sequelize = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
-// 🔥 FIX 1: Add this line to parse JSON bodies
-app.use(express.json()); 
 
+app.use(express.json());
+
+// Root route
 app.get("/", (req, res) => {
   res.send("API Running");
 });
 
+// Mount Routes
+app.use("/api/auth", authRoutes);
 
-app.listen(3000, () => {
-  console.log("Server running");
-});
+const PORT = 3000;
+
+// Sync database tables, then boot up the express listener
+sequelize.sync({ alter: true }) // 'alter: true' safely checks and updates structural layout updates
+  .then(() => {
+    console.log("Database connected & synced successfully.");
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to sync database:", err);
+  });
