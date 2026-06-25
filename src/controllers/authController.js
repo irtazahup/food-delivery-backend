@@ -1,6 +1,17 @@
+// Add this line at the VERY top of file that uses the .env variables (before imports)
+require('dotenv').config();
+
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+    console.error("CRITICAL ERROR: JWT_SECRET is not defined in .env file!");
+    process.exit(1);
+}
 // @desc    Register a new user
 // @route   POST /api/auth/signup
 exports.signup = async (req, res) => {
@@ -41,5 +52,36 @@ exports.signup = async (req, res) => {
     
   } catch (error) {
     return res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+exports.login = async(req,res) =>
+{
+  try{
+    const {email,password} = req.body;
+    if(!email || !password){
+      return res.status(400).json({error:'Email and Password are required'});
+
+    }
+
+    const user = await User.findOne({where : {email}});
+    if (!user){
+      return res.status(404).json({error:'User not found'});
+    }
+
+    const isPasswordValid = await bcrypt.compare(password,user.password);
+    if(!isPasswordValid){
+      return res.status(401).json({error:'Invalid password'});
+    }
+
+    const token = jwt.sign({userId:user.id,email:user.email},JWT_SECRET,{expiresIn:'1h'});
+
+    return res.status(200).json({message:'Login successful',token});
+
+  }catch(error){
+    return res.status(500).json({error:error.message});
+
   }
 };
