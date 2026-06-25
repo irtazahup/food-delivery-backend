@@ -1,3 +1,4 @@
+
 const express = require("express");
 const sequelize = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
