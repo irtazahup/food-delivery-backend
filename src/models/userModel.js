@@ -24,7 +24,16 @@ const User = sequelize.define("User", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-}, {
+  role: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: "customer", // New signups default to buyers/customers
+    validate: {
+      isIn: [["customer", "owner", "driver"]], // Validates values on create/update
+    },
+  },
+},
+{
   timestamps: true, // Automatically manages createdAt and updatedAt columns
 });
 
