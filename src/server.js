@@ -5,7 +5,7 @@ const authRoutes = require("./routes/authRoutes");
 const Restaurant = require("./models/restaurantModel");
 const MenuItem = require("./models/menuItemModel");
 const User = require("./models/userModel");
-
+const menuRoutes = require("./routes/menuRoutes");
 const restaurantRoutes = require("./routes/restaurantRoutes");
 
 
@@ -21,6 +21,7 @@ app.get("/", (req, res) => {
 // Mount Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/restaurants", restaurantRoutes);
+app.use("/api", menuRoutes);
 
 const PORT = 3000;
 
